@@ -4,11 +4,18 @@ Short definitions in my own words. Keep alphabetical.
 
 | Term | Meaning | See |
 |---|---|---|
+| Inference | Running an already-trained model to get answers (what I do locally) | ai/01 |
 | LLM | Large language model: predicts the next token of text | ai/ |
-| MCP | Model Context Protocol: lets Claude call tools I write | backend/ |
+| Adapter | Small plug-in that reads one AI app's activity and converts it to Walkie's common format | backend/ |
+| MCP | Model Context Protocol: open standard that lets AI apps call tools I write | backend/ |
+| Ollama | App that downloads and runs local LLMs, with a server on :11434 | ai/01 |
+| Parameters / weights | The billions of numbers learned during training; the model file is mostly these | ai/01 |
 | Quantization | Storing model weights with fewer bits (e.g. 4-bit) so it fits in less memory | ai/ |
 | STT | Speech-to-text | ai/ |
 | Token | Chunk of text a model reads/writes (~¾ of a word) | ai/ |
+| Tokens/sec (tok/s) | How fast a model writes; Ollama shows it as "eval rate" | ai/01 |
+| Training | Teaching a model by tuning its weights on huge data; done by the model maker, not me | ai/01 |
 | TTS | Text-to-speech | ai/ |
+| Unified memory | Apple Silicon RAM shared by CPU and GPU, so models can use most of the 16 GB | ai/01 |
 | VAD | Voice activity detection: detects when someone is speaking | ai/ |
 | WebSocket | Two-way connection that stays open, so the server can push updates | frontend/ |

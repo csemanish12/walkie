@@ -5,9 +5,10 @@ Python + FastAPI. Runs on http://localhost:8000
 ## Folders
 ```
 app/
-  watcher/   tail ~/.claude/projects/**/*.jsonl, parse lines into events
+  sources/   one adapter per AI app (first: Claude Code ~/.claude/projects/**/*.jsonl),
+             each turns that app's activity into the common Event format
   store/     SQLite (sqlmodel): sessions + events
-  mcp/       MCP server: check_inbox(), ask_human()
+  mcp/       MCP server any MCP-capable app can call: check_inbox(), ask_human()
   api/       REST + WebSocket for the frontend
 ```
 

@@ -4,7 +4,7 @@
 
 | Topic | File | Date |
 |---|---|---|
-| | | |
+| Ollama + running my first local LLM | [01-ollama-first-llm.md](01-ollama-first-llm.md) | 2026-09-26 |
 
 ## Things to learn (roughly in build order)
 

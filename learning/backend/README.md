@@ -14,5 +14,6 @@
 - [ ] Watching files (watchdog) and tailing new lines
 - [ ] SQLite + sqlmodel
 - [ ] WebSockets in FastAPI
-- [ ] MCP: what a tool is, FastMCP, registering with Claude Code
-- [ ] Claude Code transcript format (`.jsonl`)
+- [ ] Adapter pattern: one interface, many implementations
+- [ ] MCP: what a tool is, FastMCP, registering with different AI apps
+- [ ] How each AI app stores history (Claude Code `.jsonl`, Codex, Cursor SQLite, ...)

@@ -11,9 +11,9 @@ npm run dev
 ```
 
 ## Planned pieces
-- `SessionList`: all sessions, active/idle badge
+- `SessionList`: sessions from every connected AI app, grouped by app, active/idle badge
 - `Timeline`: live events + AI summaries
-- `Chat`: send to inbox, answer Claude's questions
+- `Chat`: send to inbox, answer the AI app's questions
 - `VoiceControls`: mic + playback
 
 Talks **only** to the backend (REST + WebSocket on :8000).
