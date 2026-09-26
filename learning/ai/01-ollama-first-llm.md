@@ -133,13 +133,13 @@ brew install ollama
 ```
 With Homebrew I start the server myself (Step 3).
 
-- [ ] Done. My notes: ollama is installed
+- [x] Done. My notes: ollama is installed
 
 ### Step 2 — Check it's installed
 ```bash
 ollama --version
 ```
-- [ ] Done. Version I got: client version -> 0.34.4
+- [x] Done. Version I got: client version -> 0.34.4
 
 ### Step 3 — Make sure the server is running
 If I used the desktop app, it's already running. With Homebrew, in a **separate terminal tab**:
@@ -152,7 +152,7 @@ curl http://localhost:11434
 ```
 Expected reply: `Ollama is running`
 
-- [ ] Done. My notes: got Ollama is running
+- [x] Done. My notes: got Ollama is running
 
 ### Step 4 — Download my first model
 ```bash
@@ -165,7 +165,7 @@ Check it's there:
 ```bash
 ollama list
 ```
-- [ ] Done. Size shown: 3.4GB . Make sure to keep ollama running otherwise pull will not work.
+- [x] Done. Size shown: 3.4GB . Make sure to keep ollama running otherwise pull will not work.
 
 ### Step 5 — Chat with it
 ```bash
@@ -180,7 +180,7 @@ Useful commands inside the chat:
 - `/set nothink` turn off "thinking" mode (faster; Qwen 3.5 thinks out loud by default)
 - `/bye` exit
 
-- [ ] Done. What surprised me: The thinking mode took way too much time compared to nothink mode.
+- [x] Done. What surprised me: The thinking mode took way too much time compared to nothink mode.
 
 ### Step 6 — Measure speed
 ```bash
@@ -188,7 +188,7 @@ ollama run qwen3.5:4b --verbose
 ```
 After each answer it prints stats. The important line is **eval rate** (tokens/sec).
 
-- [ ] Done. My eval rate: 18.53 tok/s
+- [x] Done. My eval rate: 18.53 tok/s
 
 ### Step 7 — See memory use
 While a model is loaded (in another terminal tab):
@@ -198,7 +198,7 @@ ollama ps
 Shows which model is loaded, how much memory it uses, and whether it's on the GPU.
 Ollama unloads a model after ~5 minutes idle.
 
-- [ ] Done. Memory used:
+- [x] Done. Memory used: 3.2GB and 100% on GPU
 
 ### Step 8 — Call it from code (this is how Walkie will use it)
 Instead of chatting in the terminal, send an HTTP request:
@@ -213,7 +213,7 @@ curl http://localhost:11434/api/generate -d '{
 The reply is JSON; the answer is in the `"response"` field.
 This is exactly what `ai/app/llm/` will do later, just from Python instead of curl.
 
-- [ ] Done. My notes:
+- [x] Done. My notes:
 
 ### Cleanup commands (for later)
 ```bash
@@ -228,7 +228,7 @@ ollama stop qwen3.5:4b   # unload from memory now
 
 | Model | Size on disk | Memory (ollama ps) | Speed (tok/s) | Quality notes |
 |---|---|---|---|---|
-| qwen3.5:4b | | | | |
+| qwen3.5:4b | 3.4 GB | 3.2GB | 18.53 | |
 | gemma4:e4b (later) | | | | |
 
 ## Gotchas / mistakes I made
