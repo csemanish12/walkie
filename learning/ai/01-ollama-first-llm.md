@@ -81,7 +81,7 @@ Speed is measured in **tokens per second (tok/s)**. More tok/s means the answer 
 
 ### Why it fits on my Mac: quantization
 
-- Normally each weight uses 16 bits. 4B weights × 2 bytes = **~8 GB**. Too heavy.
+- Normally each weight uses 16 bits (see [02-precision-fp16-bf16.md](02-precision-fp16-bf16.md) for why 16-bit, and FP16 vs BF16). 4B weights × 2 bytes = **~8 GB**. Too heavy.
 - **Quantization** stores each weight in about **4 bits** instead, so the file is **~3 GB**.
 - A bit less precise, but the answers are nearly as good. Most local models are shipped this way.
 - My M1 has **16 GB unified memory**, meaning the CPU and GPU share the same RAM. A 3 GB model fits easily.
