@@ -48,15 +48,51 @@ BF16   ("brain float", from Google Brain)
 | Range | narrow — overflows around ±65,504 | same huge range as FP32 (~1e-38 to ~3e38) | huge |
 | Precision | higher (more exact digits) | lower (coarser steps) | highest |
 
-### Why this matters for training an LLM
+### Worked examples with real numbers
 
-- During training, some numbers in the network (activations, gradients) can get **very large or
-  very small** at different points.
-- **FP16** has a narrow range. If a number in training grows past ~65,504, it **overflows** and
-  becomes infinity/garbage. Training with FP16 needs a workaround called "loss scaling" to avoid this.
-- **BF16** keeps FP32's wide range (same 8 exponent bits), so it basically never overflows,
-  at the cost of coarser precision (fewer mantissa bits). Training tolerates that fine — it's
-  already a bit noisy from other sources (random batch order, dropout, etc.) — see `01-ollama-first-llm.md`.
+**Example 1 — a big number: BF16 survives, FP16 breaks**
+
+Say a value during training reaches **70,000** (activations/gradients can spike this high).
+
+- **FP16** tops out at exactly **65,504**. 70,000 is bigger, so FP16 can't represent it —
+  it **overflows to infinity**. Once one value is `inf`, it multiplies through the network
+  into `NaN` ("not a number") and corrupts training.
+- **BF16** has FP32's exponent range (up to ~3.4 x 10^38), so 70,000 is nowhere near the ceiling.
+  It gets rounded to the closest value its 7-bit mantissa can store:
+
+```
+70,000 stored in BF16  ->  70,144   (off by ~0.2%, but still a usable number)
+70,000 stored in FP16  ->  inf      (broken — training stops working)
+```
+
+BF16 loses a little precision but keeps training alive. FP16 keeps more precision but dies here.
+
+**Example 2 — two close numbers: FP16 tells them apart, BF16 can't**
+
+Take **1.0** and **1.001**. Near the value 1, each format can only represent points spaced a
+fixed distance apart (the "resolution"), fixed by how many mantissa bits it has:
+
+| Format | Mantissa bits | Resolution near 1.0 | Can it tell 1.0 and 1.001 apart? |
+|---|---|---|---|
+| FP16 | 10 | 0.000977 | **Yes** — 1.001 rounds to 1.0009766, a distinct value |
+| BF16 | 7 | 0.0078125 | **No** — both round to the same stored value, 1.0 |
+
+BF16's steps near 1 are `1.0, 1.0078125, 1.015625, ...`. Since 1.001 is closer to 1.0 than to
+the next step, it rounds down and **collapses into 1.0** — the distinction is lost. FP16, with
+finer steps, keeps them separate.
+
+**Why this settles in BF16's favor for training**
+
+The overflow in Example 1 is fatal — it produces garbage and the model stops learning. The
+precision loss in Example 2 is just noise — a small rounding error training already shrugs off,
+similar to how it tolerates randomness from batch order or dropout. Given that trade,
+**avoiding overflow matters more than keeping fine precision**, which is why BF16 became the
+default over FP16 for training LLMs.
+
+### A couple more details
+
+- Training with FP16 anyway (some setups still do) needs a workaround called **"loss scaling"**
+  to dodge the overflow from Example 1 above.
 - That's why **BF16 is the default for training and storing modern LLMs** (Qwen, Llama, Gemma, ...),
   and FP16 is less common today outside of some inference-only setups.
 - Converting BF16 <-> FP32 is also cheap: just truncate/pad the mantissa, since the exponent
