@@ -12,9 +12,12 @@ app/
   api/       REST + WebSocket for the frontend
 ```
 
-## Setup (not done yet)
+## Setup
 ```bash
-uv init
-uv add fastapi uvicorn watchdog sqlmodel mcp httpx
 uv run uvicorn app.main:app --reload
 ```
+Dependencies (`fastapi`, `uvicorn`, more added as each Phase 1 step needs them) are already
+tracked in `pyproject.toml` / `uv.lock` — `uv run` installs them into `.venv` automatically.
+
+Check it's up: `curl http://localhost:8000/health` -> `{"status":"ok"}`, or open
+`http://localhost:8000/docs` for the interactive API explorer.

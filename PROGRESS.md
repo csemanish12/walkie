@@ -16,14 +16,17 @@ How to use this file:
 - [x] Draft the common Event format ([docs/architecture.md](docs/architecture.md#common-event-format))
 
 ## Phase 1: Read-only live view
-- [ ] Backend: FastAPI hello world (`GET /health`)
-- [ ] Backend: adapter interface (one adapter per AI app)
-- [ ] Backend: first adapter (Claude Code) prints new lines
-- [ ] Backend: adapter turns lines into common Events + save to SQLite
-- [ ] Backend: WebSocket pushes new events
-- [ ] Frontend: scaffold with Vite (React + TS)
-- [ ] Frontend: session list (grouped by app)
-- [ ] Frontend: timeline that updates live over WebSocket
+
+Goal: watch this session's own tool calls appear live in a browser tab. No AI, no voice yet.
+
+- [x] 1. Backend skeleton: `uv init`, FastAPI + uvicorn, `GET /health` returns `{"status": "ok"}` ([note](learning/backend/02-fastapi-hello-world.md))
+- [ ] 2. Read one transcript line by hand: open the `.jsonl`, parse a few lines with `json.loads`
+- [ ] 3. Turn a line into a Common Event: one function, raw line -> Event dict (see docs/architecture.md#common-event-format), test against the 4 real examples from learning/backend/01
+- [ ] 4. Watch the file live: watchdog tails new lines, print each new Event to the terminal
+- [ ] 5. Save to SQLite: one table matching the Event shape, insert on every new event
+- [ ] 6. WebSocket: `/ws` endpoint pushes each new Event to connected clients, test before any frontend
+- [ ] 7. Frontend scaffold: `npm create vite@latest` in frontend/, confirm default page runs
+- [ ] 8. Session list + Timeline: connect to `/ws`, render events live, group by session/project
 
 ## Phase 2: AI summaries
 - [ ] Install Ollama, pull `qwen3.5:4b`, try it in the terminal
@@ -80,4 +83,10 @@ How to use this file:
   shape of Claude Code events: prompt, reply, tool_call, tool_result, with is_error on
   results. Wrote it up in learning/backend/01-claude-code-transcript.md.
 - Drafted the Common Event format from that data (docs/architecture.md). **Phase 0 done.**
-- Next: Phase 1 — FastAPI hello world, then the first adapter reading Claude Code transcripts.
+- Fixed SSH: origin was pointed at plain `github.com` instead of the `github-personal` host
+  alias in `~/.ssh/config`, so the wrong key kept getting used for push.
+- Planned Phase 1 as 8 small steps in PROGRESS.md, backend first then frontend.
+- Step 1 done: `backend/` is a real uv project, FastAPI + uvicorn installed, `GET /health`
+  works end to end (curl + `/docs`). Wrote up FastAPI/uv basics in
+  learning/backend/02-fastapi-hello-world.md.
+- Next: Step 2 — read one transcript line by hand with `json.loads`.
