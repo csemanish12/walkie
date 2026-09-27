@@ -11,9 +11,9 @@ How to use this file:
 - [x] Decide architecture (frontend / backend / ai), see [docs/architecture.md](docs/architecture.md)
 - [x] Create project structure
 - [x] `git init` + first commit
-- [ ] Install tools: `uv` (Python), Node.js (LTS), Ollama
-- [ ] Draft the common Event format (same for every AI app)
-- [ ] Look at a real Claude Code transcript `.jsonl` to test the format against
+- [x] Install tools: `uv` (0.8.15), Node (v24.4.1, via nvm), Ollama (0.34.4)
+- [x] Look at a real Claude Code transcript `.jsonl` ([notes](learning/backend/01-claude-code-transcript.md))
+- [x] Draft the common Event format ([docs/architecture.md](docs/architecture.md#common-event-format))
 
 ## Phase 1: Read-only live view
 - [ ] Backend: FastAPI hello world (`GET /health`)
@@ -75,4 +75,9 @@ How to use this file:
   learning/ai/01-ollama-first-llm.md.
 - Wrote learning/ai/02-precision-fp16-bf16.md: why LLMs train in 16-bit, FP16 vs BF16 with
   worked examples, and how 4-bit quantization works (integer + scale, not floating point).
-- Next: pick a default model for Walkie's summarizer, draft the common Event format, study a real transcript file.
+- Confirmed uv, Node/nvm, Ollama all installed.
+- Opened this session's own live transcript (~/.claude/projects/.../*.jsonl) to see the real
+  shape of Claude Code events: prompt, reply, tool_call, tool_result, with is_error on
+  results. Wrote it up in learning/backend/01-claude-code-transcript.md.
+- Drafted the Common Event format from that data (docs/architecture.md). **Phase 0 done.**
+- Next: Phase 1 — FastAPI hello world, then the first adapter reading Claude Code transcripts.

@@ -136,8 +136,7 @@ Libraries: React, Vite, TypeScript, Tailwind, shadcn/ui, TanStack Query.
 ```
 
 - **Source adapters** (`sources/`): one per app. Each watches that app's files and emits common Events.
-- **Common Event**: the contract. Draft fields: `app`, `session_id`, `project`, `timestamp`,
-  `kind` (prompt / tool_call / tool_result / reply / status), `summary_text`, `raw`.
+- **Common Event**: the contract, see [Common Event format](#common-event-format) below.
 - **Event store** keeps history across restarts.
 - **MCP server** (FastMCP, mounted in FastAPI at `/mcp`) provides:
   - `check_inbox()`: returns queued messages from me.
@@ -154,6 +153,52 @@ Every MCP app has its own settings for adding a server. The address is always th
 Apps only read the inbox when they call `check_inbox`, so each app needs one line in its
 own instructions file (e.g. `CLAUDE.md`, `AGENTS.md`, Cursor rules):
 "Call `check_inbox` between major steps and before finishing."
+
+---
+
+## Common Event format
+
+The contract every adapter must produce, and the only shape the store/API/frontend/AI
+service ever deal with. Designed by looking at a real Claude Code transcript line
+(`~/.claude/projects/**/*.jsonl`) — see `learning/backend/` for that walkthrough.
+
+```
+Event
+  id            string    our own id (uuid4), stable even if the source's id format changes
+  app           string    which adapter produced this, e.g. "claude-code"
+  session_id    string    the source app's session/conversation id
+  project       string    short project name, derived from cwd (last path segment)
+  cwd           string    full working directory, as the source app reported it
+  timestamp     string    ISO 8601, from the source app (not our own clock)
+  kind          string    one of: prompt | reply | tool_call | tool_result | status
+  tool_name     string?   e.g. "Bash", "Read", "Edit" — only set for tool_call / tool_result
+  tool_use_id   string?   correlates a tool_call with its later tool_result
+  text          string    the content: prompt text, reply text, tool input, or tool output
+  is_error      bool      true if a tool_result represents a failure
+  summary_text  string?   one-line AI summary, filled in later by the AI service (null at first)
+  raw           object    the original parsed source line, kept for debugging and future fields
+```
+
+**Why these fields, from what the real transcript showed:**
+- Claude Code's file already separates events exactly this way: a plain-string user message
+  (`prompt`), assistant message content of type `text` (`reply`), assistant content of type
+  `tool_use` (`tool_call`), and a later user-role message with content type `tool_result`
+  (`tool_result`) that references the call via `tool_use_id`. That mapping is 1:1, so the
+  adapter's job is mostly renaming fields, not restructuring data.
+- `is_error` exists because a real tool call in this project's own transcript exited 1 (a
+  failed command) but still returned useful text — the UI needs to flag that distinctly from
+  a normal result, not just show the same box.
+- `cwd` doubles as the "which project" signal; other apps may or may not expose this the
+  same way, so `project` is a derived, adapter-agnostic field the frontend can always rely on.
+- `raw` exists because every source app will have extra fields (`usage` token counts,
+  `permissionMode`, `gitBranch`, ...) that aren't part of the contract yet, but that are
+  cheap to keep around instead of throwing away.
+- `summary_text` starts empty and gets filled in by Phase 2 (the AI service) — the format
+  doesn't wait on that being built.
+
+**What an adapter does, concretely:** tail the source file for new lines, parse each line,
+and if it matches one of the four `kind`s above, emit one Event. Everything else (queue
+operations, file-history snapshots, etc.) is ignored for now.
 
 ---
 
@@ -235,7 +280,6 @@ walkie/
 
 ## Open questions
 
-- Common Event format: final fields. This is the contract between adapters, backend and frontend.
 - Which apps keep readable local history? (fill in the Supported apps table)
 - How does the inbox know **which** app/session a message is for?
 - Voice v1: spoken updates only, or two-way conversation?

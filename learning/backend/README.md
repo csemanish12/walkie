@@ -4,7 +4,7 @@
 
 | Topic | File | Date |
 |---|---|---|
-| | | |
+| Reading a real Claude Code transcript | [01-claude-code-transcript.md](01-claude-code-transcript.md) | 2026-09-27 |
 
 ## Things to learn
 
@@ -16,4 +16,4 @@
 - [ ] WebSockets in FastAPI
 - [ ] Adapter pattern: one interface, many implementations
 - [ ] MCP: what a tool is, FastMCP, registering with different AI apps
-- [ ] How each AI app stores history (Claude Code `.jsonl`, Codex, Cursor SQLite, ...)
+- [x] How Claude Code stores history ([note](01-claude-code-transcript.md)); Codex/Cursor still to check
