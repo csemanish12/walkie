@@ -228,11 +228,34 @@ ollama stop qwen3.5:4b   # unload from memory now
 
 | Model | Size on disk | Memory (ollama ps) | Speed (tok/s) | Quality notes |
 |---|---|---|---|---|
-| qwen3.5:4b | 3.4 GB | 3.2GB | 18.53 | |
-| gemma4:e4b (later) | | | | |
+| qwen3.5:4b | 3.4 GB | 3.2 GB | 18.53 | |
+| gemma4:e4b | 9.6 GB | 3.2 GB | 19.07 | |
+
+Speed is basically identical on my M1 (~19 tok/s either way) — not a meaningful difference.
+
+### Why Gemma's disk size (9.6 GB) and memory use (3.2 GB) don't match
+
+This looked like a mistake at first, but it's a real Gemma 4 design choice: **Per-Layer
+Embeddings (PLE)**. Gemma 3n/4 keeps large embedding lookup tables out of GPU memory —
+they stay on disk/CPU RAM and get pulled in per layer as needed, instead of all sitting in
+GPU memory like a normal model's weights do.
+
+```
+Normal model (Qwen):  every weight lives in GPU memory the whole time -> disk size ~= memory
+Gemma 4:               core weights in GPU memory (~3 GB, the "effective" 4.5B)
+                       + big embedding tables stay on disk, fetched layer-by-layer
+```
+
+That's what "effective parameters" in "E4B" means: the file holds 8B total parameters, but
+only ~4.5B worth need to sit in fast memory at once. Net effect: Gemma 4 E4B gives
+Qwen-3B-like memory usage from an 8B-parameter model, at the cost of a bigger file sitting
+unused on disk between requests. Qwen doesn't do this trick, which is why its disk size and
+memory size matched.
 
 ## Gotchas / mistakes I made
--
+- Assumed a much bigger disk size (9.6 GB) meant much bigger memory use too. Wrong for
+  Gemma 4 — see the PLE explanation above. Worth checking `ollama ps`, not just file size,
+  before assuming a model won't fit.
 
 ## Questions still open
 - What does "thinking" mode actually do, and when is it worth the wait?
@@ -242,4 +265,6 @@ ollama stop qwen3.5:4b   # unload from memory now
 ## Links
 - https://ollama.com (download, model library)
 - https://ollama.com/library/qwen3.5 (the model I use)
+- https://ollama.com/library/gemma4 (the comparison model)
+- https://huggingface.co/blog/rishiraj/matformer-in-gemma-3n (Per-Layer Embeddings, "effective parameters" explained)
 - https://github.com/ollama/ollama/blob/main/docs/api.md (HTTP API reference)

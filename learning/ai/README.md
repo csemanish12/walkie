@@ -19,7 +19,7 @@ Tick a box once I've written the note.
 - [ ] Prompting a small model: system prompts, keeping output short
 - [ ] "Thinking" vs non-thinking mode (Qwen 3.5)
 - [ ] Structured output (getting JSON back reliably)
-- [ ] Comparing models: Qwen 3.5 4B vs Gemma 4 E4B (my own benchmark)
+- [x] Comparing models: Qwen 3.5 4B vs Gemma 4 E4B ([results](01-ollama-first-llm.md))
 
 **Voice**
 - [ ] Audio basics: sample rate, PCM, mono, 16 kHz

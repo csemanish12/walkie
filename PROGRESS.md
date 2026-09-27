@@ -28,7 +28,7 @@ How to use this file:
 ## Phase 2: AI summaries
 - [ ] Install Ollama, pull `qwen3.5:4b`, try it in the terminal
 - [ ] AI service: `POST /summarize`
-- [ ] Try Gemma 4 E4B and compare speed and quality (write results in learning/ai)
+- [x] Try Gemma 4 E4B and compare speed and quality ([results](learning/ai/01-ollama-first-llm.md))
 - [ ] Backend calls AI service, timeline shows summaries
 
 ## Phase 3: Talk to AI apps (text)
@@ -67,4 +67,12 @@ How to use this file:
 - Created project structure and notes system.
 - Named the project **Walkie** (push-to-talk with AI apps); renamed folder from newProject.
 - Made the design app-agnostic: one adapter per AI app + a common Event format; MCP for talking back.
-- Next: git init, install tools, study a transcript file.
+
+### 2026-09-27
+- Ran qwen3.5:4b and gemma4:e4b side by side on the M1: near-identical speed (~19 tok/s).
+- Learned why Gemma's 9.6 GB file only uses 3.2 GB memory: Per-Layer Embeddings keep big
+  embedding tables on disk instead of GPU memory ("effective parameters"). Wrote it up in
+  learning/ai/01-ollama-first-llm.md.
+- Wrote learning/ai/02-precision-fp16-bf16.md: why LLMs train in 16-bit, FP16 vs BF16 with
+  worked examples, and how 4-bit quantization works (integer + scale, not floating point).
+- Next: pick a default model for Walkie's summarizer, draft the common Event format, study a real transcript file.

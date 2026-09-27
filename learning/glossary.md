@@ -6,6 +6,7 @@ Short definitions in my own words. Keep alphabetical.
 |---|---|---|
 | Adapter | Small plug-in that reads one AI app's activity and converts it to Walkie's common format | backend/ |
 | BF16 | "Brain float 16": 16-bit format, same wide range as FP32 but less precision; the standard for training LLMs | ai/02 |
+| Effective parameters | The "E" in Gemma's E2B/E4B: how many parameters actually need fast memory at once, thanks to PLE | ai/01 |
 | FP16 | 16-bit float with more precision than BF16 but a much narrower range (can overflow) | ai/02 |
 | FP32 | 32-bit float, the old "full precision" default; accurate but twice the memory of 16-bit | ai/02 |
 | Inference | Running an already-trained model to get answers (what I do locally) | ai/01 |
@@ -14,6 +15,7 @@ Short definitions in my own words. Keep alphabetical.
 | MCP | Model Context Protocol: open standard that lets AI apps call tools I write | backend/ |
 | Ollama | App that downloads and runs local LLMs, with a server on :11434 | ai/01 |
 | Parameters / weights | The billions of numbers learned during training; the model file is mostly these | ai/01 |
+| Per-Layer Embeddings (PLE) | Gemma trick: keeps big embedding tables on disk/CPU RAM instead of GPU memory, loaded per layer as needed | ai/01 |
 | Quantization | Storing model weights with fewer bits (e.g. 4-bit) so it fits in less memory | ai/ |
 | STT | Speech-to-text | ai/ |
 | Token | Chunk of text a model reads/writes (~¾ of a word) | ai/ |
