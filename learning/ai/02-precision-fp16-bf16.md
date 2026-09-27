@@ -117,13 +117,49 @@ tolerates being rounded down further (**quantization**) to 8-bit or 4-bit for lo
 use, without the model "forgetting" much. See `01-ollama-first-llm.md` for how that gets me
 from an ~8 GB file down to the ~3 GB one I'm running.
 
+---
+
+## Does 4-bit quantization still use floating point?
+
+Mostly **no** — it switches to a different scheme: **integers + a shared scale factor**,
+not floats with an exponent and mantissa.
+
+**Why floats stop making sense at 4 bits.** A float needs bits for sign, exponent, *and*
+mantissa. With only 4 bits total there's barely anything left for precision after carving
+out a sign and exponent. An integer uses all 4 bits just to count, giving 16 possible values
+(0-15) instead, and a separate (float) scale factor does the job the exponent used to do.
+
+**The formula:**
+```
+real_value ≈ stored_int × scale
+```
+Weights are grouped into small **blocks** (e.g. 32 or 64 weights), and each block shares one
+scale factor computed from that block's own range.
+
+**Worked example.** Say a block of BF16 weights ranges from **-2.0 to +2.0**:
+1. Compute a scale: `scale = 4.0 / 15 ≈ 0.267` (the block's range / 15 available integer steps).
+2. To store the weight **1.2**: `1.2 / 0.267 ≈ 4.5` → round to the integer **4**.
+3. To read it back: `4 × 0.267 ≈ 1.068` — close to 1.2, but not exact. That gap is the cost of quantization.
+
+Each block now needs 16 x 4-bit integers (8 bytes) + one scale (a few bytes), instead of
+16 x 16-bit floats (32 bytes) — most of the ~8 GB -> ~3 GB shrink comes from this.
+
+**What Ollama actually uses.** The models I pull are in **GGUF** format with a scheme like
+**Q4_K_M** — exactly this integer + scale idea, but smarter: smaller blocks, and a bit of
+extra precision kept for the weights that matter most, which is why quality holds up better
+than naive 4-bit rounding would suggest.
+
+**The exception.** A few specialized schemes (**NF4**, used in QLoRA fine-tuning, and **FP4**)
+do keep a tiny floating-point-like structure even at 4 bits. But GGUF/Q4_K_M (what Ollama uses)
+is integer + scale, not this.
+
 ## Gotchas / mistakes I made
 -
 
 ## Questions still open
-- How exactly does 4-bit quantization work if a float needs an exponent + mantissa — does
-  4-bit still use floating point, or something else (e.g. integers + a scale factor)?
+-
 
 ## Links
 - https://en.wikipedia.org/wiki/Bfloat16_floating-point_format
 - https://en.wikipedia.org/wiki/Half-precision_floating-point_format
+- https://github.com/ggml-org/llama.cpp/blob/master/gguf-py/gguf/quants.py (GGUF quant formats used by Ollama)
