@@ -6,13 +6,14 @@
 |---|---|---|
 | Reading a real Claude Code transcript | [01-claude-code-transcript.md](01-claude-code-transcript.md) | 2026-09-27 |
 | FastAPI hello world (`GET /health`) | [02-fastapi-hello-world.md](02-fastapi-hello-world.md) | 2026-09-27 |
+| Parsing and tailing transcripts (the adapter) | [03-parsing-and-tailing-transcripts.md](03-parsing-and-tailing-transcripts.md) | 2026-10-05 |
 
 ## Things to learn
 
 - [x] uv: Python projects and virtual envs ([note](02-fastapi-hello-world.md))
 - [x] FastAPI basics: routes, request/response models ([note](02-fastapi-hello-world.md))
 - [ ] async / await in Python
-- [ ] Watching files (watchdog) and tailing new lines
+- [x] Watching files (watchdog) and tailing new lines ([note](03-parsing-and-tailing-transcripts.md))
 - [ ] SQLite + sqlmodel
 - [ ] WebSockets in FastAPI
 - [ ] Adapter pattern: one interface, many implementations

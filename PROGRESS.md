@@ -22,7 +22,7 @@ Goal: watch this session's own tool calls appear live in a browser tab. No AI, n
 - [x] 1. Backend skeleton: `uv init`, FastAPI + uvicorn, `GET /health` returns `{"status": "ok"}` ([note](learning/backend/02-fastapi-hello-world.md))
 - [x] 2. Read one transcript line by hand: open the `.jsonl`, parse a few lines with `json.loads`
 - [x] 3. Turn a line into a Common Event: one function, raw line -> Event dict (see docs/architecture.md#common-event-format), test against the 4 real examples from learning/backend/01
-- [ ] 4. Watch the file live: watchdog tails new lines, print each new Event to the terminal
+- [x] 4. Watch the file live: watchdog tails new lines, print each new Event to the terminal
 - [ ] 5. Save to SQLite: one table matching the Event shape, insert on every new event
 - [ ] 6. WebSocket: `/ws` endpoint pushes each new Event to connected clients, test before any frontend
 - [ ] 7. Frontend scaffold: `npm create vite@latest` in frontend/, confirm default page runs
