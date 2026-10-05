@@ -2,18 +2,16 @@
 
 React + Vite + TypeScript. Runs on http://localhost:5173
 
-Not scaffolded yet. That's my first frontend learning step:
-
 ```bash
-npm create vite@latest . -- --template react-ts
 npm install
 npm run dev
 ```
+Needs the backend running on :8000 (the badge says **live** when the WebSocket is connected).
 
 ## Planned pieces
-- `SessionList`: sessions from every connected AI app, grouped by app, active/idle badge
-- `Timeline`: live events + AI summaries
-- `Chat`: send to inbox, answer the AI app's questions
-- `VoiceControls`: mic + playback
+- [x] `SessionList`: sessions from every connected AI app, grouped by app, active/idle badge
+- [x] `Timeline`: live events (AI summaries in Phase 2)
+- [ ] `Chat`: send to inbox, answer the AI app's questions
+- [ ] `VoiceControls`: mic + playback
 
 Talks **only** to the backend (REST + WebSocket on :8000).

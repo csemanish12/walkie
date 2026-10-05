@@ -1,122 +1,77 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react'
+import { SessionList } from './components/SessionList'
+import { Timeline } from './components/Timeline'
+import { BACKEND, type SessionInfo, type WalkieEvent } from './types'
+import { useLiveEvents } from './useLiveEvents'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [sessions, setSessions] = useState<SessionInfo[]>([])
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [events, setEvents] = useState<WalkieEvent[]>([])
+  const [now, setNow] = useState(() => Date.now())
+
+  // Session list once on load; live events keep it up to date after that.
+  useEffect(() => {
+    fetch(`${BACKEND}/sessions`)
+      .then((r) => r.json())
+      .then((list: SessionInfo[]) => {
+        setSessions(list)
+        setSelectedId((id) => id ?? list[0]?.session_id ?? null)
+      })
+  }, [])
+
+  // History for the selected session.
+  useEffect(() => {
+    if (!selectedId) return
+    fetch(`${BACKEND}/sessions/${selectedId}/events`)
+      .then((r) => r.json())
+      .then(setEvents)
+  }, [selectedId])
+
+  // Re-render every 15s so active/idle dots age out.
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 15_000)
+    return () => clearInterval(t)
+  }, [])
+
+  const connected = useLiveEvents((e) => {
+    setNow(Date.now())
+    setSessions((list) => {
+      const existing = list.find((s) => s.session_id === e.session_id)
+      const updated: SessionInfo = existing
+        ? { ...existing, last_seen: e.timestamp, event_count: existing.event_count + 1 }
+        : { app: e.app, session_id: e.session_id, project: e.project, first_seen: e.timestamp, last_seen: e.timestamp, event_count: 1 }
+      // Most recently active session moves to the top.
+      return [updated, ...list.filter((s) => s.session_id !== e.session_id)]
+    })
+    setSelectedId((id) => id ?? e.session_id)
+    if (e.session_id === selectedId) setEvents((list) => [...list, e])
+  })
+
+  const selected = sessions.find((s) => s.session_id === selectedId)
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <div className="app">
+      <aside>
+        <header>
+          <h1>Walkie</h1>
+          <span className={`status ${connected ? 'on' : 'off'}`}>{connected ? 'live' : 'offline'}</span>
+        </header>
+        <SessionList sessions={sessions} selectedId={selectedId} onSelect={setSelectedId} now={now} />
+      </aside>
+      <main>
+        {selected ? (
+          <>
+            <header className="session-header">
+              <h2>{selected.project}</h2>
+              <code>{selected.session_id}</code>
+            </header>
+            <Timeline events={events} />
+          </>
+        ) : (
+          <p className="empty">Pick a session.</p>
+        )}
+      </main>
+    </div>
   )
 }
-
-export default App

@@ -26,10 +26,10 @@ Goal: watch this session's own tool calls appear live in a browser tab. No AI, n
 - [x] 5. Save to SQLite: one table matching the Event shape, insert on every new event
 - [x] 6. WebSocket: `/ws` endpoint pushes each new Event to connected clients, test before any frontend
 - [x] 7. Frontend scaffold: `npm create vite@latest` in frontend/, confirm default page runs
-- [ ] 8. Session list + Timeline: connect to `/ws`, render events live, group by session/project
+- [x] 8. Session list + Timeline: connect to `/ws`, render events live, group by session/project
 
 ## Phase 2: AI summaries
-- [ ] Install Ollama, pull `qwen3.5:4b`, try it in the terminal
+- [x] Install Ollama, pull `qwen3.5:4b`, try it in the terminal ([results](learning/ai/01-ollama-first-llm.md))
 - [ ] AI service: `POST /summarize`
 - [x] Try Gemma 4 E4B and compare speed and quality ([results](learning/ai/01-ollama-first-llm.md))
 - [ ] Backend calls AI service, timeline shows summaries
@@ -62,6 +62,20 @@ Goal: watch this session's own tool calls appear live in a browser tab. No AI, n
 ---
 
 ## Log
+
+### 2026-10-05
+- **Phase 1 done**: this session's own tool calls show up live in the browser at :5173.
+- Steps 2–3: `parse_line()` in `backend/app/sources/claude_code.py`. Real transcripts also have
+  `thinking` items, `isMeta` system-reminder lines, and image prompts as lists; all handled.
+  Full 1,226-line transcript → 142 tool calls / 142 results / 87 replies / 50 prompts.
+- Step 4: `Tailer` (byte offsets + half-line buffer) + watchdog. Skips nested `subagents/*.jsonl`.
+- Steps 5–6: SQLite via SQLModel (`backend/walkie.db`), `/sessions`, `/sessions/{id}/events`, `/ws`.
+  Watchdog thread → `call_soon_threadsafe` → asyncio queue → save + broadcast.
+- Steps 7–8: Vite + React + TS, `SessionList` + `Timeline` + `useLiveEvents` hook. Plain CSS for now.
+- 12 backend tests (pytest), incl. one end-to-end: append a line → arrives on `/ws` → stored.
+- Notes: learning/backend/03, 04 and learning/frontend/01.
+- Open: history before backend start isn't replayed; `project` changes if a session `cd`s.
+- Next: Phase 2. AI service `POST /summarize`.
 
 ### 2026-09-26
 - Explored what can be built: hooks, transcripts, MCP, Agent SDK.

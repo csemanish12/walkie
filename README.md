@@ -19,6 +19,17 @@ walkie/
   ai/               Python AI service + Ollama    (:8100)
 ```
 
+## Run it
+
+Two terminals:
+```bash
+cd backend && uv run uvicorn app.main:app --reload
+```
+```bash
+cd frontend && npm run dev
+```
+Open http://localhost:5173, then use Claude Code anywhere and watch it show up.
+
 ## Where to look
 
 - How it all fits together: [docs/architecture.md](docs/architecture.md)
