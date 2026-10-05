@@ -20,7 +20,7 @@ How to use this file:
 Goal: watch this session's own tool calls appear live in a browser tab. No AI, no voice yet.
 
 - [x] 1. Backend skeleton: `uv init`, FastAPI + uvicorn, `GET /health` returns `{"status": "ok"}` ([note](learning/backend/02-fastapi-hello-world.md))
-- [ ] 2. Read one transcript line by hand: open the `.jsonl`, parse a few lines with `json.loads`
+- [x] 2. Read one transcript line by hand: open the `.jsonl`, parse a few lines with `json.loads`
 - [ ] 3. Turn a line into a Common Event: one function, raw line -> Event dict (see docs/architecture.md#common-event-format), test against the 4 real examples from learning/backend/01
 - [ ] 4. Watch the file live: watchdog tails new lines, print each new Event to the terminal
 - [ ] 5. Save to SQLite: one table matching the Event shape, insert on every new event
