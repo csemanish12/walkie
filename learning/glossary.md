@@ -5,12 +5,15 @@ Short definitions in my own words. Keep alphabetical.
 | Term | Meaning | See |
 |---|---|---|
 | Adapter | Small plug-in that reads one AI app's activity and converts it to Walkie's common format | backend/ |
+| asyncio event loop | Python's single thread that runs all `async` code; other threads must hand work to it with `call_soon_threadsafe` | backend/04 |
 | BF16 | "Brain float 16": 16-bit format, same wide range as FP32 but less precision; the standard for training LLMs | ai/02 |
 | Effective parameters | The "E" in Gemma's E2B/E4B: how many parameters actually need fast memory at once, thanks to PLE | ai/01 |
 | FP16 | 16-bit float with more precision than BF16 but a much narrower range (can overflow) | ai/02 |
 | FP32 | 32-bit float, the old "full precision" default; accurate but twice the memory of 16-bit | ai/02 |
+| CORS | Browser rule: a page may only call another origin (host:port) if that server says it's allowed | backend/04 |
 | Inference | Running an already-trained model to get answers (what I do locally) | ai/01 |
 | JSON Lines (.jsonl) | One JSON object per line; easy to append to and to tail | backend/01 |
+| Lifespan | FastAPI's startup/shutdown hook (start watchers, open DB) | backend/04 |
 | LLM | Large language model: predicts the next token of text | ai/ |
 | Mantissa | The precise digits part of a float; more mantissa bits = finer precision | ai/02 |
 | MCP | Model Context Protocol: open standard that lets AI apps call tools I write | backend/ |
@@ -19,6 +22,7 @@ Short definitions in my own words. Keep alphabetical.
 | Parameters / weights | The billions of numbers learned during training; the model file is mostly these | ai/01 |
 | Per-Layer Embeddings (PLE) | Gemma trick: keeps big embedding tables on disk/CPU RAM instead of GPU memory, loaded per layer as needed | ai/01 |
 | Quantization | Storing model weights with fewer bits (e.g. 4-bit) so it fits in less memory | ai/ |
+| SQLModel | Library where one Python class is both a Pydantic model and a database table | backend/04 |
 | STT | Speech-to-text | ai/ |
 | Token | Chunk of text a model reads/writes (~¾ of a word) | ai/ |
 | Tokens/sec (tok/s) | How fast a model writes; Ollama shows it as "eval rate" | ai/01 |

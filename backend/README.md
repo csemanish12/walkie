@@ -12,12 +12,25 @@ app/
   api/       REST + WebSocket for the frontend
 ```
 
-## Setup
+## Run
 ```bash
 uv run uvicorn app.main:app --reload
 ```
-Dependencies (`fastapi`, `uvicorn`, more added as each Phase 1 step needs them) are already
-tracked in `pyproject.toml` / `uv.lock` — `uv run` installs them into `.venv` automatically.
+`uv run` installs everything from `pyproject.toml` / `uv.lock` into `.venv` automatically.
+On startup it watches `~/.claude/projects/*/*.jsonl` and stores new events in `walkie.db`.
 
-Check it's up: `curl http://localhost:8000/health` -> `{"status":"ok"}`, or open
-`http://localhost:8000/docs` for the interactive API explorer.
+| Endpoint | What |
+|---|---|
+| `GET /health` | `{"status":"ok"}` |
+| `GET /sessions` | every session seen, most recently active first |
+| `GET /sessions/{id}/events` | latest 500 events of one session |
+| `WS /ws` | every new Event, as JSON, live |
+
+Interactive docs: http://localhost:8000/docs
+
+Watch events in the terminal only (no server): `uv run python -m app.sources.watcher`
+
+## Test
+```bash
+uv run pytest
+```
