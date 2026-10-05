@@ -13,6 +13,8 @@ so I can chat with them or call them from code: no internet, no API key, no cost
 
 ### Training vs running (inference)
 
+![Training vs running an LLM locally](running_llm_locally_diagram.svg)
+
 There are two completely separate stages in an LLM's life:
 
 ```
