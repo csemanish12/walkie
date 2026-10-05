@@ -25,7 +25,7 @@ Goal: watch this session's own tool calls appear live in a browser tab. No AI, n
 - [x] 4. Watch the file live: watchdog tails new lines, print each new Event to the terminal
 - [x] 5. Save to SQLite: one table matching the Event shape, insert on every new event
 - [x] 6. WebSocket: `/ws` endpoint pushes each new Event to connected clients, test before any frontend
-- [ ] 7. Frontend scaffold: `npm create vite@latest` in frontend/, confirm default page runs
+- [x] 7. Frontend scaffold: `npm create vite@latest` in frontend/, confirm default page runs
 - [ ] 8. Session list + Timeline: connect to `/ws`, render events live, group by session/project
 
 ## Phase 2: AI summaries
