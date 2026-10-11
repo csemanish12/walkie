@@ -29,10 +29,19 @@ Goal: watch this session's own tool calls appear live in a browser tab. No AI, n
 - [x] 8. Session list + Timeline: connect to `/ws`, render events live, group by session/project
 
 ## Phase 2: AI summaries
+
+Goal: every timeline row gets a one-line summary from a local model. **I write the code;
+Claude coaches** (hints, reviews), see the approach in the 2026-10-11 log.
+
 - [x] Install Ollama, pull `qwen3.5:4b`, try it in the terminal ([results](learning/ai/01-ollama-first-llm.md))
-- [ ] AI service: `POST /summarize`
 - [x] Try Gemma 4 E4B and compare speed and quality ([results](learning/ai/01-ollama-first-llm.md))
-- [ ] Backend calls AI service, timeline shows summaries
+- [ ] 1. Talk to Ollama with `curl`: `POST /api/chat`, read the JSON, try `"stream": false` and `"think": false`
+- [ ] 2. Same request from a Python script with `httpx`
+- [ ] 3. Prompt design: pull ~10 real events from `backend/walkie.db`, iterate until summaries are good, time each call
+- [ ] 4. `ai/` service skeleton: `uv init`, FastAPI on :8100, `GET /health` (from memory, no peeking at backend/)
+- [ ] 5. `POST /summarize`: Pydantic request/response models, `async def`, `httpx.AsyncClient` with a timeout
+- [ ] 6. Backend calls AI service without blocking the live stream, stores `summary_text`, pushes the update over `/ws` (design it with Claude first: which events, bursts, AI service down)
+- [ ] 7. Frontend shows summaries: replace the row by `id` when an updated event arrives
 
 ## Phase 3: Talk to AI apps (text)
 - [ ] Backend: MCP server with `check_inbox()` and `ask_human()`
@@ -62,6 +71,12 @@ Goal: watch this session's own tool calls appear live in a browser tab. No AI, n
 ---
 
 ## Log
+
+### 2026-10-11
+- Phase 1 merged to main (one commit per step).
+- New way of working from Phase 2: I implement, Claude coaches. Per step: goal, what to learn,
+  "done when" check. I ask for "hint", "stuck", "review", "why...?" or "check my note".
+- Split Phase 2 into 7 small steps (above).
 
 ### 2026-10-05
 - **Phase 1 done**: this session's own tool calls show up live in the browser at :5173.
