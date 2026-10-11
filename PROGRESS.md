@@ -35,7 +35,7 @@ Claude coaches** (hints, reviews), see the approach in the 2026-10-11 log.
 
 - [x] Install Ollama, pull `qwen3.5:4b`, try it in the terminal ([results](learning/ai/01-ollama-first-llm.md))
 - [x] Try Gemma 4 E4B and compare speed and quality ([results](learning/ai/01-ollama-first-llm.md))
-- [ ] 1. Talk to Ollama with `curl`: `POST /api/chat`, read the JSON, try `"stream": false` and `"think": false`
+- [x] 1. Talk to Ollama with `curl`: `POST /api/chat`, read the JSON, try `"stream": false` and `"think": false` ([note](learning/ai/03-ollama-api.md))
 - [ ] 2. Same request from a Python script with `httpx`
 - [ ] 3. Prompt design: pull ~10 real events from `backend/walkie.db`, iterate until summaries are good, time each call
 - [ ] 4. `ai/` service skeleton: `uv init`, FastAPI on :8100, `GET /health` (from memory, no peeking at backend/)
@@ -77,6 +77,13 @@ Claude coaches** (hints, reviews), see the approach in the 2026-10-11 log.
 - New way of working from Phase 2: I implement, Claude coaches. Per step: goal, what to learn,
   "done when" check. I ask for "hint", "stuck", "review", "why...?" or "check my note".
 - Split Phase 2 into 7 small steps (above).
+- Step 1 done: called Ollama's `/api/chat` with curl. gemma4:e4b runs at ~17 tok/s on the M1.
+  Same question went from 755 tokens / 44.6 s (defaults) to 157 / 14.1 s (`think: false`) to
+  2 / 0.51 s (+ system prompt "one short plain-text line"). Speed is fixed; only fewer tokens
+  make it faster. `keep_alive` default 5 min, so ~4.4 s reload after quiet spells.
+  Wrote learning/ai/03-ollama-api.md.
+- Noticed `qwen3.5:4b` is no longer installed; only `gemma4:e4b`.
+- Next: step 2, the same request from Python with `httpx`.
 
 ### 2026-10-05
 - **Phase 1 done**: this session's own tool calls show up live in the browser at :5173.
