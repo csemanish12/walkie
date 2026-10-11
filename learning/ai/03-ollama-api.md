@@ -85,6 +85,8 @@ timer **restarts on every request**. After that the model is unloaded, and the n
 ## Minimal example
 Same model, same question, same M1. Each change cuts tokens generated:
 
+![Same model, same laptop, same question: 44.6 s to 0.5 s](fewer_tokens_faster_diagram.svg)
+
 | | `eval_count` | `total_duration` | Answer |
 |---|---|---|---|
 | Defaults (thinking on) | 755 | 44.6 s | markdown essay with headings, table, emoji |
