@@ -1,0 +1,125 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Same 16 bits, two different rulers: FP16 vs BF16</title>
+<desc>FP16 is a short ruler with fine markings that ends at 65,504, so 70,000 falls off the end and becomes infinity. BF16 is a very long ruler with coarse markings, so 70,000 lands at 70,144. Zoomed in between 1.000 and 1.010, FP16 has a mark every 0.001 and keeps 1.001, while BF16 has one mark at 1.0078, so 1.001 rounds to 1.0.</desc>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="1080" height="1080" fill="#FFFFFF"/>
+<g font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+<text x="80" y="100" font-size="46" font-weight="700" fill="#2C2C2A">Same 16 bits.</text>
+<text x="80" y="154" font-size="46" font-weight="700" fill="#2C2C2A">Two different rulers.</text>
+<text x="80" y="226" font-size="22" font-weight="600" fill="#534AB7">HOW FAR CAN IT REACH?</text>
+<text x="80" y="276" font-size="25" font-weight="600" fill="#2C2C2A">FP16</text>
+<text x="172" y="276" font-size="20" fill="#5F5E5A">fine markings, but it ends</text>
+<rect x="80" y="290" width="430.4548571428571" height="46" rx="3" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+<line x1="80.0" y1="290" x2="80.0" y2="312" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="88.0" y1="290" x2="88.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="96.0" y1="290" x2="96.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="104.0" y1="290" x2="104.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="112.0" y1="290" x2="112.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="120.0" y1="290" x2="120.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="128.0" y1="290" x2="128.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="136.0" y1="290" x2="136.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="144.0" y1="290" x2="144.0" y2="312" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="152.0" y1="290" x2="152.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="160.0" y1="290" x2="160.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="168.0" y1="290" x2="168.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="176.0" y1="290" x2="176.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="184.0" y1="290" x2="184.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="192.0" y1="290" x2="192.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="200.0" y1="290" x2="200.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="208.0" y1="290" x2="208.0" y2="312" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="216.0" y1="290" x2="216.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="224.0" y1="290" x2="224.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="232.0" y1="290" x2="232.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="240.0" y1="290" x2="240.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="248.0" y1="290" x2="248.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="256.0" y1="290" x2="256.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="264.0" y1="290" x2="264.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="272.0" y1="290" x2="272.0" y2="312" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="280.0" y1="290" x2="280.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="288.0" y1="290" x2="288.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="296.0" y1="290" x2="296.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="304.0" y1="290" x2="304.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="312.0" y1="290" x2="312.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="320.0" y1="290" x2="320.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="328.0" y1="290" x2="328.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="336.0" y1="290" x2="336.0" y2="312" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="344.0" y1="290" x2="344.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="352.0" y1="290" x2="352.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="360.0" y1="290" x2="360.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="368.0" y1="290" x2="368.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="376.0" y1="290" x2="376.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="384.0" y1="290" x2="384.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="392.0" y1="290" x2="392.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="400.0" y1="290" x2="400.0" y2="312" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="408.0" y1="290" x2="408.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="416.0" y1="290" x2="416.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="424.0" y1="290" x2="424.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="432.0" y1="290" x2="432.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="440.0" y1="290" x2="440.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="448.0" y1="290" x2="448.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="456.0" y1="290" x2="456.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="464.0" y1="290" x2="464.0" y2="312" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="472.0" y1="290" x2="472.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="480.0" y1="290" x2="480.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="488.0" y1="290" x2="488.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="496.0" y1="290" x2="496.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="504.0" y1="290" x2="504.0" y2="302" stroke="#5F5E5A" stroke-width="1.2"/>
+<text x="80" y="362" font-size="18" fill="#5F5E5A">0</text>
+<text x="506" y="362" text-anchor="end" font-size="18" font-weight="600" fill="#2C2C2A">65,504</text>
+<line x1="540.0" y1="276" x2="540.0" y2="352" stroke="#A32D2D" stroke-width="2.5" stroke-dasharray="5 4"/>
+<text x="554.0" y="306" font-size="23" font-weight="700" fill="#A32D2D">70,000 → ∞</text>
+<text x="554.0" y="334" font-size="19" fill="#A32D2D">falls off the end</text>
+<text x="80" y="416" font-size="25" font-weight="600" fill="#2C2C2A">BF16</text>
+<text x="172" y="416" font-size="20" fill="#5F5E5A">coarse markings, keeps going</text>
+<rect x="80" y="430" width="880" height="46" rx="3" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+<line x1="80.0" y1="430" x2="80.0" y2="452" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="144.0" y1="430" x2="144.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="208.0" y1="430" x2="208.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="272.0" y1="430" x2="272.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="336.0" y1="430" x2="336.0" y2="452" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="400.0" y1="430" x2="400.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="464.0" y1="430" x2="464.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="528.0" y1="430" x2="528.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="592.0" y1="430" x2="592.0" y2="452" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="656.0" y1="430" x2="656.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="720.0" y1="430" x2="720.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="784.0" y1="430" x2="784.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="848.0" y1="430" x2="848.0" y2="452" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="912.0" y1="430" x2="912.0" y2="442" stroke="#5F5E5A" stroke-width="1.2"/>
+<line x1="960" y1="453" x2="1004" y2="453" stroke="#5F5E5A" stroke-width="2" marker-end="url(#arr)"/>
+<text x="80" y="502" font-size="18" fill="#5F5E5A">0</text>
+<text x="1000" y="502" text-anchor="end" font-size="18" fill="#5F5E5A">… up to ~3×10³⁸</text>
+<line x1="540.0" y1="416" x2="540.0" y2="492" stroke="#0F6E56" stroke-width="2.5"/>
+<text x="554.0" y="416" font-size="23" font-weight="700" fill="#0F6E56">70,000 → 70,144</text>
+<text x="80" y="578" font-size="22" font-weight="600" fill="#534AB7">HOW FINELY CAN IT MEASURE?</text>
+<text x="80" y="606" font-size="19" fill="#5F5E5A">Zoomed in between 1.000 and 1.010, marks drawn at their real spacing</text>
+<text x="80" y="656" font-size="25" font-weight="600" fill="#2C2C2A">FP16</text>
+<rect x="80" y="670" width="920" height="46" rx="3" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+<line x1="80.0" y1="670" x2="80.0" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="169.8" y1="670" x2="169.8" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="259.7" y1="670" x2="259.7" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="349.5" y1="670" x2="349.5" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="439.4" y1="670" x2="439.4" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="529.2" y1="670" x2="529.2" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="619.1" y1="670" x2="619.1" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="708.9" y1="670" x2="708.9" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="798.8" y1="670" x2="798.8" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="888.6" y1="670" x2="888.6" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="978.4" y1="670" x2="978.4" y2="692" stroke="#5F5E5A" stroke-width="1.5"/>
+<circle cx="172.0" cy="704" r="7" fill="#0F6E56"/>
+<text x="188.0" y="656" font-size="22" font-weight="700" fill="#0F6E56">1.001 → 1.00098, kept</text>
+<text x="80" y="776" font-size="25" font-weight="600" fill="#2C2C2A">BF16</text>
+<rect x="80" y="790" width="920" height="46" rx="3" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+<line x1="80.0" y1="790" x2="80.0" y2="812" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="798.8" y1="790" x2="798.8" y2="812" stroke="#5F5E5A" stroke-width="1.5"/>
+<circle cx="172.0" cy="824" r="7" fill="#FFFFFF" stroke="#A32D2D" stroke-width="2"/>
+<line x1="163.0" y1="824" x2="86" y2="824" stroke="#A32D2D" stroke-width="2" marker-end="url(#arr)"/>
+<text x="188.0" y="776" font-size="22" font-weight="700" fill="#A32D2D">1.001 → rounds to 1.0</text>
+<text x="80" y="860" font-size="18" fill="#5F5E5A">1.000</text>
+<text x="798.8" y="860" text-anchor="middle" font-size="18" fill="#5F5E5A">1.0078</text>
+<text x="1000" y="860" text-anchor="end" font-size="18" fill="#5F5E5A">1.010</text>
+<rect x="80" y="908" width="920" height="96" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+<text x="540" y="948" text-anchor="middle" font-size="25" font-weight="600" fill="#26215C">For training, reaching far matters more than measuring finely.</text>
+<text x="540" y="982" text-anchor="middle" font-size="23" fill="#3C3489">That’s why almost every open model ships in BF16.</text>
+<text x="80" y="1044" font-size="16" fill="#888780">Top rulers: shared scale, tick marks illustrative. Values computed with numpy + ml_dtypes.</text>
+</g></svg>

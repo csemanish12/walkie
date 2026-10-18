@@ -32,6 +32,10 @@ More mantissa bits = finer **precision** (more exact digits, smaller gaps betwee
 
 ![FP32, BF16 and FP16 bit layouts, with what each format does to 70,000, 1.001 and 0.00000001](fp16_vs_bf16_diagram.svg)
 
+Plain-language version (no bits, just two rulers: one short and fine, one long and coarse):
+
+![FP16 is a short ruler with fine marks, BF16 a long ruler with coarse marks](fp16_vs_bf16_rulers.svg)
+
 Both use 16 bits total. They split them differently:
 
 ```
