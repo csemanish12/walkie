@@ -21,3 +21,6 @@ models/
 
 # Secrets
 .env
+
+# Social media drafts (kept local, never committed)
+posts/
