@@ -5,8 +5,9 @@
 
 ## In one sentence
 A weight is stored as a **floating point number** (sign + exponent + mantissa, like binary
-scientific notation); 16 bits is the standard for **training** because it's the cheapest format
-that's still precise enough for learning to work, and BF16 vs FP16 is two different ways of
+scientific notation); 16 bits is the standard for the **heavy math in training** because it's
+the cheapest format that's still good enough there (the weight updates themselves stay in
+32-bit), and BF16 vs FP16 is two different ways of
 splitting those 16 bits between "how big a number can be" and "how precise it is."
 
 ---
@@ -28,6 +29,8 @@ More mantissa bits = finer **precision** (more exact digits, smaller gaps betwee
 ---
 
 ## FP16 vs BF16
+
+![FP32, BF16 and FP16 bit layouts, with what each format does to 70,000, 1.001 and 0.00000001](fp16_vs_bf16_diagram.svg)
 
 Both use 16 bits total. They split them differently:
 
@@ -91,8 +94,12 @@ default over FP16 for training LLMs.
 
 ### A couple more details
 
-- Training with FP16 anyway (some setups still do) needs a workaround called **"loss scaling"**
-  to dodge the overflow from Example 1 above.
+- Training with FP16 anyway (some setups still do) needs a workaround called **"loss scaling"**.
+  It fixes the *other* end of the range: **underflow**. FP16 can't store anything smaller than
+  ~6e-8, so a tiny gradient like 0.00000001 silently becomes **0** and that weight stops learning.
+  Loss scaling multiplies the loss (and so every gradient) by a big factor, e.g. 1024, before the
+  backward pass, then divides it back out before updating the weights. BF16 reaches down to
+  ~1e-38, so it keeps 0.00000001 as-is and mostly doesn't need this.
 - That's why **BF16 is the default for training and storing modern LLMs** (Qwen, Llama, Gemma, ...),
   and FP16 is less common today outside of some inference-only setups.
 - Converting BF16 <-> FP32 is also cheap: just truncate/pad the mantissa, since the exponent
@@ -102,14 +109,25 @@ default over FP16 for training LLMs.
 
 ## Why 16 bits at all, and not 32 or 8?
 
-Training repeatedly nudges every weight by a tiny amount (the gradient), e.g. 0.0001.
+Training repeatedly nudges every weight by a tiny amount, e.g. 0.0001. The catch: **16-bit
+alone can't do that.**
 
-- **Too few bits (8-bit)**: the nudge is too small to represent, rounds to zero, the model
-  doesn't learn.
-- **32-bit**: precise enough, and was the old default, but doubles memory and compute cost
-  for accuracy that training doesn't actually need.
-- **16-bit (BF16)**: the sweet spot — precise enough for the tiny updates to register, half
-  the memory of 32-bit, and modern GPUs have hardware built specifically to do 16-bit math fast.
+```
+1.0 + 0.0001  in FP16  ->  1.0      (the step size near 1 is 0.000977, so 0.0001 rounds away)
+1.0 + 0.0001  in BF16  ->  1.0      (step near 1 is 0.0078, even coarser)
+1.0 + 0.0001  in FP32  ->  1.0001   (step near 1 is 0.00000012)
+```
+
+So real training is **mixed precision**, splitting the work by what each part needs:
+- **16-bit (BF16) for the heavy math**: the huge matrix multiplications in the forward and
+  backward pass. That's most of the compute, half the memory of 32-bit, and modern GPUs have
+  hardware built specifically to do 16-bit math fast. Small rounding errors here are just noise.
+- **32-bit for the weight updates**: a **"master copy"** of the weights (and the optimizer's
+  running averages) is kept in FP32, so `weight + tiny update` actually changes the weight.
+  Each step, the 16-bit copy used for the math is refreshed from it.
+- **8-bit**: some recent frontier models even do part of the heavy math in **FP8**, with careful
+  per-block scaling, still keeping higher-precision master weights. Far fiddlier, so BF16
+  remains the default.
 
 Once training is finished, the weights are **frozen** — no more tiny accumulating updates,
 just repeated multiplication with fixed numbers. That's a much easier job, which is why it
@@ -131,30 +149,51 @@ out a sign and exponent. An integer uses all 4 bits just to count, giving 16 pos
 
 **The formula:**
 ```
-real_value ≈ stored_int × scale
+real_value ≈ stored_int × scale + min
 ```
-Weights are grouped into small **blocks** (e.g. 32 or 64 weights), and each block shares one
-scale factor computed from that block's own range.
+Weights are grouped into small **blocks** (e.g. 32 weights), and each block stores its own
+`scale` and `min`, computed from that block's own range. The integers 0–15 can't be negative,
+so `min` shifts them to where the block's values actually are.
 
 **Worked example.** Say a block of BF16 weights ranges from **-2.0 to +2.0**:
-1. Compute a scale: `scale = 4.0 / 15 ≈ 0.267` (the block's range / 15 available integer steps).
-2. To store the weight **1.2**: `1.2 / 0.267 ≈ 4.5` → round to the integer **4**.
-3. To read it back: `4 × 0.267 ≈ 1.068` — close to 1.2, but not exact. That gap is the cost of quantization.
+1. `min = -2.0` (the smallest value), `scale = (2.0 - (-2.0)) / 15 ≈ 0.267` (range / 15 steps).
+2. To store the weight **1.3**: `(1.3 - (-2.0)) / 0.267 ≈ 12.4` → round to the integer **12**.
+3. To read it back: `12 × 0.267 + (-2.0) = 1.2`. Close to 1.3, but not exact. That gap is the
+   cost of quantization; it's at most half a step (~0.13 here).
+4. The block's lowest weight, -2.0, is stored as `0`, and the highest, 2.0, as `15`. The full
+   range fits.
 
-Each block now needs 16 x 4-bit integers (8 bytes) + one scale (a few bytes), instead of
-16 x 16-bit floats (32 bytes) — most of the ~8 GB -> ~3 GB shrink comes from this.
+(Simpler schemes like **Q4_0** skip `min` and use signed integers −8…7 with only a scale. Same
+idea, one number less per block.)
+
+Each block of 32 now needs 32 × 4-bit integers (16 bytes) + a scale and min (a few bytes),
+instead of 32 × 16-bit floats (64 bytes). Most of the ~8 GB → ~3 GB shrink comes from this.
 
 **What Ollama actually uses.** The models I pull are in **GGUF** format with a scheme like
-**Q4_K_M** — exactly this integer + scale idea, but smarter: smaller blocks, and a bit of
-extra precision kept for the weights that matter most, which is why quality holds up better
-than naive 4-bit rounding would suggest.
+**Q4_K_M**, which is this exact scale + min idea, but smarter:
+- **Two-level blocks:** 256-weight "super-blocks" split into 8 sub-blocks of 32. Each sub-block
+  gets its own scale and min, and those are themselves stored as small 6-bit numbers (scaled
+  once per super-block), so the overhead stays tiny.
+- **The "M" (medium) mix:** a few of the most sensitive weight tensors are kept at higher
+  precision (6-bit) instead of 4-bit.
+
+That's why quality holds up better than naive 4-bit rounding would suggest.
 
 **The exception.** A few specialized schemes (**NF4**, used in QLoRA fine-tuning, and **FP4**)
 do keep a tiny floating-point-like structure even at 4 bits. But GGUF/Q4_K_M (what Ollama uses)
 is integer + scale, not this.
 
 ## Gotchas / mistakes I made
--
+Found while fact-checking this note for a post (2026-10-18), every number re-run with
+`uv run --with numpy --with ml_dtypes` (ml_dtypes = the bfloat16 type JAX/TensorFlow use):
+- I first wrote that 16-bit is "precise enough for the tiny updates to register". **Wrong:**
+  `1.0 + 0.0001` is `1.0` in both FP16 and BF16. That's why training keeps FP32 master weights.
+- I first wrote that loss scaling dodges FP16's **overflow**. **Backwards:** it fixes
+  **underflow** (tiny gradients like 1e-8 becoming 0 in FP16).
+- My first 4-bit example used `int × scale` with integers 0–15 for a -2…+2 block, which can't
+  store any negative weight. Needs a `min` offset (or signed integers).
+- Verified as correct: FP16 max 65,504 (65,520 → inf); 70,000 → FP16 inf, BF16 70,144;
+  1.001 → FP16 1.0009765625, BF16 1.0; BF16 = top 16 bits of FP32 (pi 0x40490fdb → 0x4049).
 
 ## Questions still open
 -
