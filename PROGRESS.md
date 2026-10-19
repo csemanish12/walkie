@@ -36,7 +36,7 @@ Claude coaches** (hints, reviews), see the approach in the 2026-10-11 log.
 - [x] Install Ollama, pull `qwen3.5:4b`, try it in the terminal ([results](learning/ai/01-ollama-first-llm.md))
 - [x] Try Gemma 4 E4B and compare speed and quality ([results](learning/ai/01-ollama-first-llm.md))
 - [x] 1. Talk to Ollama with `curl`: `POST /api/chat`, read the JSON, try `"stream": false` and `"think": false` ([note](learning/ai/03-ollama-api.md))
-- [ ] 2. Same request from a Python script with `httpx`
+- [x] 2. Same request from a Python script with `httpx` (`scripts/ollama_chat.py`)
 - [ ] 3. Prompt design: pull ~10 real events from `backend/walkie.db`, iterate until summaries are good, time each call
 - [ ] 4. `ai/` service skeleton: `uv init`, FastAPI on :8100, `GET /health` (from memory, no peeking at backend/)
 - [ ] 5. `POST /summarize`: Pydantic request/response models, `async def`, `httpx.AsyncClient` with a timeout
@@ -71,6 +71,20 @@ Claude coaches** (hints, reviews), see the approach in the 2026-10-11 log.
 ---
 
 ## Log
+
+### 2026-10-19
+- Step 2 done: `scripts/ollama_chat.py` calls `/api/chat` with httpx (`uv run --with httpx`, no
+  project needed) and prints answer | tokens | total s | prompt s | tok/s.
+- Long answers measure 17.5–17.75 tok/s, matching step 1's hand calculation. 2-token answers
+  read ~30 tok/s: too few tokens to measure (eval_duration covers ~1 token gap).
+- First call hit `httpx.ReadTimeout`: httpx's default is 5 s, and the model had been unloaded
+  (keep_alive) so loading alone took ~5 s. `think: true` gave eval_count 747 for a visibly
+  shorter answer: the rest was hidden thinking tokens.
+- Skipped the failure-mode drills (familiar from backend work). LLM-specific differences worth
+  remembering: latency depends on output length (bound it with `options.num_predict`), cold
+  start after keep_alive, read timeout = whole generation when not streaming, and requests
+  queue on one GPU.
+- Next: step 3, prompt design on ~10 real events from walkie.db.
 
 ### 2026-10-11
 - Phase 1 merged to main (one commit per step).
