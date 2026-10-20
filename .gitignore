@@ -24,3 +24,6 @@ models/
 
 # Social media drafts (kept local, never committed)
 posts/
+
+# Real session events used as prompt-design test data (contain my own session text)
+scripts/samples.json
