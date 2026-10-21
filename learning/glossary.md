@@ -7,8 +7,10 @@ Short definitions in my own words. Keep alphabetical.
 | Adapter | Small plug-in that reads one AI app's activity and converts it to Walkie's common format | backend/ |
 | asyncio event loop | Python's single thread that runs all `async` code; other threads must hand work to it with `call_soon_threadsafe` | backend/04 |
 | BF16 | "Brain float 16": 16-bit format, same wide range as FP32 but less precision; the standard for training LLMs | ai/02 |
+| Context (for an LLM) | Everything in the prompt; the only information the model has, since it remembers nothing between calls | ai/04 |
 | CORS | Browser rule: a page may only call another origin (host:port) if that server says it's allowed | backend/04 |
 | Effective parameters | The "E" in Gemma's E2B/E4B: how many parameters actually need fast memory at once, thanks to PLE | ai/01 |
+| Few-shot prompting | Putting a few finished input → output examples in the prompt so the model copies the style | ai/04 |
 | FP16 | 16-bit float with more precision than BF16 but a much narrower range (can overflow) | ai/02 |
 | FP32 | 32-bit float, the old "full precision" default; accurate but twice the memory of 16-bit | ai/02 |
 | Inference | Running an already-trained model to get answers (what I do locally) | ai/01 |
@@ -27,10 +29,12 @@ Short definitions in my own words. Keep alphabetical.
 | Prompt caching | Reusing already-processed prompt tokens from the previous call instead of reading them again | ai/03 |
 | Quantization | Storing model weights with fewer bits (e.g. 4-bit) so it fits in less memory | ai/ |
 | SQLModel | Library where one Python class is both a Pydantic model and a database table | backend/04 |
+| Stateless | Keeps no memory between calls; every request must carry all the context it needs | ai/04 |
 | Streaming | Getting the answer piece by piece as it's generated, instead of all at the end | ai/03 |
 | STT | Speech-to-text | ai/ |
 | System prompt | A message with role "system": instructions on how to answer, separate from the question | ai/03 |
 | Tailing | Reading only what's been appended to a file since last time (like `tail -f`) | backend/03 |
+| Temperature | How randomly the model picks each next token; 0 = always the most likely one (consistent) | ai/04 |
 | Thinking (reasoning) | Output tokens a model writes to reason before answering; slow, hidden from the answer | ai/03 |
 | Token | Chunk of text a model reads/writes (~¾ of a word) | ai/ |
 | Tokens/sec (tok/s) | How fast a model writes; Ollama shows it as "eval rate" | ai/01 |
@@ -39,3 +43,4 @@ Short definitions in my own words. Keep alphabetical.
 | Unified memory | Apple Silicon RAM shared by CPU and GPU, so models can use most of the 16 GB | ai/01 |
 | VAD | Voice activity detection: detects when someone is speaking | ai/ |
 | WebSocket | Two-way connection that stays open, so the server can push updates | frontend/ |
+| Zero-shot prompting | Describing the output you want without any examples | ai/04 |

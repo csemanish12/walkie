@@ -37,7 +37,7 @@ Claude coaches** (hints, reviews), see the approach in the 2026-10-11 log.
 - [x] Try Gemma 4 E4B and compare speed and quality ([results](learning/ai/01-ollama-first-llm.md))
 - [x] 1. Talk to Ollama with `curl`: `POST /api/chat`, read the JSON, try `"stream": false` and `"think": false` ([note](learning/ai/03-ollama-api.md))
 - [x] 2. Same request from a Python script with `httpx` (`scripts/ollama_chat.py`)
-- [ ] 3. Prompt design: pull ~10 real events from `backend/walkie.db`, iterate until summaries are good, time each call
+- [x] 3. Prompt design: pull ~10 real events from `backend/walkie.db`, iterate until summaries are good, time each call ([note](learning/ai/04-prompting-summaries.md))
 - [ ] 4. `ai/` service skeleton: `uv init`, FastAPI on :8100, `GET /health` (from memory, no peeking at backend/)
 - [ ] 5. `POST /summarize`: Pydantic request/response models, `async def`, `httpx.AsyncClient` with a timeout
 - [ ] 6. Backend calls AI service without blocking the live stream, stores `summary_text`, pushes the update over `/ws` (design it with Claude first: which events, bursts, AI service down)
@@ -71,6 +71,17 @@ Claude coaches** (hints, reviews), see the approach in the 2026-10-11 log.
 ---
 
 ## Log
+
+### 2026-10-21
+- Step 3 done: `scripts/summarize_samples.py` summarizes 17 real events (`scripts/samples.json`,
+  gitignored) with gemma4:e4b. Baseline failures were all missing context: the model answered
+  events instead of summarizing them, missed a failure (never saw `is_error`), and got the actor wrong.
+- Fixes: delimited `<event>` block, explicit Kind/Tool/Status fields, tool call + result paired
+  by `tool_use_id` and summarized once, actors stated in the event, fixed rules in the system
+  message (cacheable), agent-agnostic (agent name from `app`), few-shot examples, temperature 0.
+- Result: 7–13 tokens per summary (was 9–42), ~0.5 s each, 3.6× less writing time for the
+  same events. Wrote learning/ai/04-prompting-summaries.md. Post idea L: "LLMs are stateless".
+- Next: step 4, the `ai/` service skeleton on :8100.
 
 ### 2026-10-19
 - Step 2 done: `scripts/ollama_chat.py` calls `/api/chat` with httpx (`uv run --with httpx`, no
